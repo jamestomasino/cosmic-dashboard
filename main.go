@@ -17,11 +17,6 @@ func main() {
 		return
 	}
 
-	// Only run for interactive shells
-	if os.Getenv("PS1") == "" && os.Getenv("TERM") == "" {
-		return
-	}
-
 	// Get current user
 	u, err := user.Current()
 	if err != nil {
