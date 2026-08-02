@@ -52,6 +52,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("\033[2K\rDropping to relay shell...")
+	fmt.Println("\033[2K\rContinue to relay shell...")
 	time.Sleep(500 * time.Millisecond)
 }
