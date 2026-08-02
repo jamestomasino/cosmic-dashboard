@@ -145,7 +145,31 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.scroll++
 		}
 	}
+	// Clamp scroll to content bounds (keeps model state in sync)
+	m.clampScroll()
 	return m, nil
+}
+
+func (m *model) clampScroll() {
+	fullContent := m.renderActivePanel()
+	lines := strings.Split(fullContent, "\n")
+	totalLines := len(lines)
+
+	availH := m.termH - 8
+	if availH < 4 {
+		availH = 4
+	}
+
+	if m.scroll < 0 {
+		m.scroll = 0
+	}
+	maxScroll := totalLines - availH
+	if maxScroll < 0 {
+		maxScroll = 0
+	}
+	if m.scroll > maxScroll {
+		m.scroll = maxScroll
+	}
 }
 
 func (m model) View() string {
@@ -174,27 +198,18 @@ func (m model) View() string {
 	lines := strings.Split(fullContent, "\n")
 	totalLines := len(lines)
 
-	// Clamp scroll offset
-	if m.scroll < 0 {
-		m.scroll = 0
-	}
-	maxScroll := totalLines - availH
-	if maxScroll < 0 {
-		maxScroll = 0
-	}
-	if m.scroll > maxScroll {
-		m.scroll = maxScroll
-	}
+	// Use clamped scroll for rendering
+	scroll := m.scroll
 
 	// Show scroll-up indicator if content above
-	if m.scroll > 0 {
+	if scroll > 0 {
 		b.WriteString(lipgloss.NewStyle().Foreground(dim).Render(" ▲ "))
 		b.WriteString("\n")
 		availH-- // use one less line for the indicator
 	}
 
 	// Clip and render visible lines
-	start := m.scroll
+	start := scroll
 	end := start + availH
 	if end > totalLines {
 		end = totalLines
@@ -205,7 +220,7 @@ func (m model) View() string {
 	}
 
 	// Show scroll-down indicator if content below
-	if m.scroll+availH < totalLines {
+	if scroll+availH < totalLines {
 		b.WriteString(lipgloss.NewStyle().Foreground(dim).Render(" ▼ "))
 		b.WriteString("\n")
 	}

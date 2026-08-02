@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/user"
-	"strings"
 	"time"
 
 	"cosmic-dashboard/collect"
@@ -27,7 +25,7 @@ func main() {
 	// Get current user
 	u, err := user.Current()
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	// Load per-user state
@@ -47,9 +45,9 @@ func main() {
 	// Save state on exit (even on error)
 	state.SaveState()
 
-	// Only fatal on real errors, not no-TTY (which happens in scripts/tests)
-	if err != nil && !strings.Contains(err.Error(), "not a terminal") {
-		log.Fatal(err)
+	// Bail silently on any error - never kill the shell
+	if err != nil {
+		return
 	}
 
 	fmt.Println("\033[2K\rContinue to relay shell...")
