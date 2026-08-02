@@ -9,8 +9,11 @@ if [ ! -f ~/.skiplogin ] && [ -n "$SSH_TTY" ] && [ -t 1 ] && [ -x /opt/cosmic-da
         pty="/dev/pts/${m##*_}"
         [ -e "$pty" ] || rm -f "$m" 2>/dev/null
     done
-    if [ ! -f "$marker" ]; then
-        /opt/cosmic-dashboard/cosmic-dashboard
-        touch "$marker"
+    # TTL: remove marker if older than 30s (previous session)
+    if [ -f "$marker" ]; then
+        marker_age=$(( $(date +%s) - $(stat -c %Y "$marker" 2>/dev/null || echo 0) ))
+        [ "$marker_age" -lt 30 ] && return 0
     fi
+    /opt/cosmic-dashboard/cosmic-dashboard
+    touch "$marker"
 fi
