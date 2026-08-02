@@ -7,7 +7,7 @@ if [ ! -f ~/.skiplogin ] && [ -n "$SSH_TTY" ] && [ -t 1 ] && [ -x /opt/cosmic-da
     for m in /tmp/.cosmic_dashboard__dev_pts_*; do
         [ -f "$m" ] || continue
         pty="/dev/pts/${m##*_}"
-        [ -e "$pty" ] || rm -f "$m"
+        [ -e "$pty" ] || rm -f "$m" 2>/dev/null
     done
     if [ ! -f "$marker" ]; then
         /opt/cosmic-dashboard/cosmic-dashboard
