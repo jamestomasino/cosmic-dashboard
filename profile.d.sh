@@ -1,6 +1,6 @@
 # Cosmic Dashboard - runs once per SSH session on fresh login
 # Opt out by creating ~/.skiplogin
-if [ ! -f ~/.skiplogin ] && [ -t 1 ]; then
+if [ ! -f ~/.skiplogin ]; then
     case "$-" in *i*) ;; *) return 0;; esac
 
     if [ -x /opt/cosmic-dashboard/cosmic-dashboard ]; then
