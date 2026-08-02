@@ -1,10 +1,10 @@
 # Cosmic Dashboard - runs once per SSH session on fresh login
 # Opt out by creating ~/.skiplogin
-if [ ! -f ~/.skiplogin ] && [ -n "$SSH_TTY" ] && [ -t 1 ]; then
+if [ ! -f ~/.skiplogin ] && [ -t 1 ]; then
     case "$-" in *i*) ;; *) return 0;; esac
 
     if [ -x /opt/cosmic-dashboard/cosmic-dashboard ]; then
-        marker="/tmp/.cosmic_dashboard_${SSH_TTY//\//_}"
+        marker="/tmp/.cosmic_dashboard_${SSH_TTY:-$RANDOM}"
 
         if [ -f "$marker" ]; then
             marker_age=$(( $(date +%s) - $(stat -c %Y "$marker" 2>/dev/null || echo 0) ))
