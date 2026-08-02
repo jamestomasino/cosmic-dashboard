@@ -214,7 +214,7 @@ func (m model) View() string {
 	}
 
 	// Fixed footer
-	b.WriteString(footerStyle.Render("q drop to relay shell  tab/→ next  shift+tab/← prev  j/k scroll"))
+	b.WriteString(footerStyle.Render("q continue to relay shell  tab/→ next  shift+tab/← prev  j/k scroll"))
 
 	return b.String()
 }
