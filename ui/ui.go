@@ -84,7 +84,7 @@ func panel(content string, borderColor lipgloss.Color) string {
 type connectionTick struct{}
 
 func connectionTickCmd() tea.Cmd {
-	return tea.Tick(300*time.Millisecond, func(t time.Time) tea.Msg {
+	return tea.Tick(80*time.Millisecond, func(t time.Time) tea.Msg {
 		return connectionTick{}
 	})
 }
@@ -124,11 +124,8 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.connStep++
 				return m, connectionTickCmd()
 			}
-			// Connection done — animate relays in
-			if m.relaysStep < len(m.state.Users)+1 {
-				m.relaysStep++
-				return m, connectionTickCmd()
-			}
+			// Connection done — show all relays at once
+			m.relaysStep = len(m.state.Users) + 1
 		}
 	case tea.KeyMsg:
 		switch msg.String() {
